@@ -39,9 +39,9 @@ class Node:
         if self.color_group:
             return self.color_group
         return type_properties[self.node_type]['color']
-
     def get_font_code(self):
         return type_properties[self.node_type]['font_code']
+
 
     def get_size(self):
         return type_properties[self.node_type]['size']
