@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>GCP IAM graph</title>
+    <script
+      type="text/javascript"
+      src="https://unpkg.com/vis-network/standalone/umd/vis-network.min.js"
+    ></script>
+    <link href="https://use.fontawesome.com/releases/v5.0.1/css/all.css" rel="stylesheet">
+
+    <style type="text/css">
+        html, body {
+            height: 90%;
+        }
+        #visualisation {
+            width: 100%;
+            height: 100%;
+            border: 1px solid lightgray;
+        }
+    </style>
+
+   
+</head>
+<body>
+
+<p>Types:
+{% for key, value in type_properties.items() %}
+
+    <input
+     {% if key in default_filters %}
+     checked="true"
+     {% endif %}
+      type="checkbox" onclick="filterByType('{{ key }}')">
+    <i style="color: {{value['color']}}" class="{{value['class']}}"></i>
+    {{ value['name'] }}</input>
+{% endfor %}
+</p>
+<p>
+Role types:
+{% for key, value in all_roles.items() %}
+    <input checked="true" type="checkbox" onclick="filterByEdgeType('{{ key }}')">
+    <span style="color: {{value}}">{{ key }}</span></input>
+{% endfor %}
+</p>
+<div id="visualisation"></div>
+ <script type="text/javascript">
+
+        var nodeTypes = {{ default_filters }};
+        var roleTypes = {{ all_roles }};
+
+        var data, nodeList, edgeList;
+
+        nodeList = {{ formatted_nodes }};
+        edgeList = {{ formatted_edges }};
+
+        var nodesArrayLength = nodeList.length;
+        var edgesArrayLength = edgeList.length;
+
+
+        var nodeListJson = []
+        for (var i = 0; i < nodesArrayLength; i++) {
+            const node_str = nodeList[i].replace("Font Awesome 5 Free", "'Font Awesome 5 Free'");
+            const node_json = JSON.parse(node_str);
+            nodeListJson.push(node_json);           
+        }
+
+        var edgeListJson = []
+        for (var i = 0; i < edgesArrayLength; i++) {
+            const edge_json = JSON.parse(edgeList[i]);
+            edgeListJson.push(edge_json);           
+        }
+        
+        
+        data = {
+            nodes: new vis.DataSet(nodeListJson),
+            edges: new vis.DataSet(edgeListJson)
+        };
+        
+        var options = {
+            nodes: {
+                shape: 'dot',
+                scaling: {
+                    label: {
+                        min: 8,
+                        max: 20
+                    }
+                }
+            },
+            edges: {
+                length: 500,
+                smooth: {
+                      enabled: true,
+                      type: "dynamic",
+                      roundness: 0.2
+                }
+            },
+            physics: {
+                stabilization: false
+            },
+            layout: {
+                randomSeed: 2
+            },
+            interaction: {
+                hideEdgesOnDrag: true,
+                hover: true,
+                navigationButtons: true,
+                keyboard: true
+            }
+        };
+
+        var container = document.getElementById('visualisation');
+
+        network = new vis.Network(container, data, options);
+
+        
+        
+        var filterEdges = function () {
+            edgeList.forEach(function (edge) {
+                try {
+                    var index = roleTypes.indexOf(edge.type);
+                    var isRemoved = index == -1;
+                    if (isRemoved) {
+                        data.edges.remove(edge);
+                    }
+                } catch (err) {
+                    console.log(err);
+                }
+            });
+        };
+
+        var filterByType = function (type) {
+            var index = nodeTypes.indexOf(type);
+            var type_added = index == -1;
+            if (type_added) {
+                nodeTypes.push(type);
+            } else {
+                nodeTypes.splice(index, 1);
+            }
+
+            var the_nodes = nodeList.filter(function (item) {
+                return item.type == type;
+            });
+
+            the_nodes.forEach(function (node) {
+                try {
+                    if (type_added) {
+                        data.nodes.add(node);
+                    } else {
+                        data.nodes.remove(node);
+                    }
+                } catch (err) {
+                    console.log(err);
+                }
+            });
+        };
+
+        var filterByEdgeType = function (type) {
+            var index = roleTypes.indexOf(type);
+            var type_added = index == -1;
+            if (type_added) {
+                roleTypes.push(type);
+            } else {
+                roleTypes.splice(index, 1);
+            }
+
+            var the_edges = edgeList.filter(function (item) {
+                return item.role == type;
+            });
+
+            the_edges.forEach(function (edge) {
+                try {
+                    if (type_added) {
+                        data.edges.add(edge);
+                    } else {
+                        data.edges.remove(edge);
+                    }
+                } catch (err) {
+                    console.log(err);
+                }
+            });
+        };
+    </script>
+</body>
+</html>
