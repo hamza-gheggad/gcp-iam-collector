@@ -59,10 +59,15 @@ Role types:
 
         var nodeListJson = []
         for (var i = 0; i < nodesArrayLength; i++) {
-            const node_str = nodeList[i].replace("Font Awesome 5 Free", "'Font Awesome 5 Free'");
+            var node_str = nodeList[i].replace("Font Awesome 5 Free", "'Font Awesome 5 Free'");
+    
+            node_str=node_str.replaceAll("</br>", "\\n");
+            console.log(node_str);
             const node_json = JSON.parse(node_str);
             nodeListJson.push(node_json);           
         }
+
+        
 
         var edgeListJson = []
         for (var i = 0; i < edgesArrayLength; i++) {

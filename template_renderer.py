@@ -34,9 +34,7 @@ def get_description(node):
 def render(nodes, edges, output_name):
     color_map = roles_to_color_map(edges=edges)
     formatted_nodes, formatted_edges = format_graph(nodes, edges, color_map)
-    #nodes_string = ",\n".join(formatted_nodes).encode('utf-8')
-    #edges_string = ",\n".join(formatted_edges).encode('utf-8')
-   
+
     create_html(formatted_nodes, formatted_edges, color_map, output_name)
 
 
