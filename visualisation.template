@@ -138,12 +138,16 @@
                 nodeTypes.splice(index, 1);
             }
 
-            nodeListJson = []
+            //replace "\\n" with "------"
+
             for (var i = 0; i < nodesArrayLength; i++) {
+            var str = JSON.stringify(nodeListJson[i]) ;
     
-            const node_json = JSON.parse(nodeList[i]);
-            nodeListJson.push(node_json);           
-        }
+            str = str.replaceAll("\\n","-------");
+            var json = JSON.parse(str) ;
+            nodeListJson[i] = json ;
+             
+            }
 
             var the_nodes = nodeListJson.filter(function (item) {
                 return item.type == type;
