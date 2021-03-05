@@ -170,7 +170,6 @@
                 return item.role == type;
             });
 
-            console.log(the_edges);
 
             the_edges.forEach(function (edge) {
 
@@ -178,10 +177,9 @@
                     console.log('IN');
                     if (type_added) {
                         data.edges.add(edge);
-                        console.log("add edge");
+
                     } else {
                         data.edges.remove(edge);
-                        console.log("remove edge");
                     }
                 } catch (err) {
                     console.log(err);
