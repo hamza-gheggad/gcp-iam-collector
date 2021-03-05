@@ -138,7 +138,14 @@
                 nodeTypes.splice(index, 1);
             }
 
-            var the_nodes = nodeList.filter(function (item) {
+            nodeListJson = []
+            for (var i = 0; i < nodesArrayLength; i++) {
+    
+            const node_json = JSON.parse(nodeList[i]);
+            nodeListJson.push(node_json);           
+        }
+
+            var the_nodes = nodeListJson.filter(function (item) {
                 return item.type == type;
             });
 
@@ -169,6 +176,7 @@
             var the_edges = edgeListJson.filter(function (item) {
                 return item.role == type;
             });
+
 
 
             the_edges.forEach(function (edge) {
