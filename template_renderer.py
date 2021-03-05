@@ -10,11 +10,12 @@ def create_html(formatted_nodes, formatted_edges, role_color_map, output_name):
     template = env.get_template('visualisation.template')
     default_filters = list(graph.type_properties.keys())
     all_roles=list(role_color_map.keys())
+    print(all_roles)
     html = template.render(formatted_nodes=formatted_nodes,
                            formatted_edges=formatted_edges,
                            type_properties=graph.type_properties,
                            default_filters=default_filters,
-                           all_roles=role_color_map)
+                           all_roles=all_roles)
     with open(output_name, "w+") as resource_file:
         resource_file.write(html)
 
